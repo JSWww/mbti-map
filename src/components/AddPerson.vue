@@ -2,12 +2,13 @@
 	<div>
 		<button @click="showModal">Add</button>
 		<ModalWindow v-if="modalOn" @close="closeModal">
-			<button @click="closeModal">X</button>
+			<button @click="closeModal" class="close">X</button>
+			<br />
 			<form v-on:submit.prevent="doAdd">
-				Name <input type="text" v-model="name" />
+				Name <input type="text" class="info" v-model="name" />
 				<br />
 				MBTI
-				<select v-model="mbti">
+				<select class="info" v-model="mbti">
 					<option>ESTJ</option>
 					<option>ESTP</option>
 					<option>ESFJ</option>
@@ -26,10 +27,10 @@
 					<option>INFP</option>
 				</select>
 				<br />
-				Photo <input type="file" v-on:change="uploadPhoto" />
+				Photo <input type="file" class="info" v-on:change="uploadPhoto" />
 				<div v-if="img"><img class="preview" v-bind:src="img" /></div>
 				<br />
-				<button type="submit">Add</button>
+				<button type="submit" class="info">Add</button>
 			</form>
 		</ModalWindow>
 	</div>
@@ -56,13 +57,16 @@ export default {
 		},
 		doAdd: function () {
 			this.$emit("addPersonProfile", this.name, this.mbti, this.img);
+			this.modalOn = false;
 			this.name = "";
 			this.mbti = "";
 			this.img = "";
-			this.modalOn = false;
 		},
 		closeModal: function () {
 			this.modalOn = false;
+			this.name = "";
+			this.mbti = "";
+			this.img = "";
 		},
 		uploadPhoto: function (event) {
 			const file = event.target.files[0];
@@ -78,5 +82,13 @@ export default {
 .preview {
 	width: 50px;
 	height: 50px;
+}
+.close {
+	float: right;
+	border: 0em;
+	background: rgba(0, 0, 0, 0);
+}
+.info {
+	margin-bottom: 2em;
 }
 </style>

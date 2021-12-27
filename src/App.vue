@@ -1,7 +1,11 @@
 <template>
 	<div id="app">
 		<section class="people">
-			<PersonProfile :people="people" />
+			<PersonProfile
+				:people="people"
+				@removePersonProfile="removePersonProfile"
+				@updatePersonProfile="updatePersonProfile"
+			/>
 		</section>
 		<AddPerson @addPersonProfile="addPersonProfile" />
 	</div>
@@ -19,8 +23,18 @@ export default {
 	data() {
 		return {
 			people: [
-				{ id: 0, name: "Luna", mbti: "ENFJ", img: "" },
-				{ id: 1, name: "SW", mbti: "ISFJ", img: "" },
+				{
+					id: 0,
+					name: "Luna",
+					mbti: "ENFJ",
+					img: "",
+				},
+				{
+					id: 1,
+					name: "SW",
+					mbti: "ISFJ",
+					img: "",
+				},
 			],
 		};
 	},
@@ -35,6 +49,21 @@ export default {
 					img,
 				},
 			];
+		},
+		updatePersonProfile(name, mbti, img, id) {
+			const people = [...this.people];
+			const person = people.find(person => person.id === id);
+
+			if (person) {
+				person.name = name;
+				person.mbti = mbti;
+				person.img = img;
+				this.people = people;
+			}
+		},
+
+		removePersonProfile(id) {
+			this.people = this.people.filter(person => person.id !== id);
 		},
 	},
 };
