@@ -8,17 +8,21 @@
 			/>
 		</section>
 		<AddPerson @addPersonProfile="addPersonProfile" />
+    <MbtiMap />
 	</div>
 </template>
 
 <script>
 import AddPerson from "./components/AddPerson.vue";
 import PersonProfile from "./components/PersonProfile.vue";
+import MbtiMap from "./components/MbtiMap";
+
 export default {
 	name: "App",
 	components: {
 		AddPerson,
 		PersonProfile,
+    MbtiMap,
 	},
 	data() {
 		return {
@@ -70,6 +74,12 @@ export default {
 </script>
 
 <style>
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
