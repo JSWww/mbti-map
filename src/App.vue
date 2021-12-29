@@ -1,14 +1,18 @@
 <template>
 	<div id="app">
-		<section class="people">
-			<PersonProfile
+		<h1>Adriel's MBTI Map</h1>
+		<AddPerson @addPersonProfile="addPersonProfile" />
+		<div class="mbti-map">
+			<MbtiBlock
+				v-for="(MBTI_BLOCK_DATA, idx) in MBTI_BLOCK_LIST"
+				:key="idx"
+				v-bind="MBTI_BLOCK_DATA"
 				:people="people"
 				@removePersonProfile="removePersonProfile"
 				@updatePersonProfile="updatePersonProfile"
+				v-on="$listeners"
 			/>
-		</section>
-		<AddPerson @addPersonProfile="addPersonProfile" />
-		<MbtiMap />
+		</div>
 	</div>
 </template>
 
@@ -18,9 +22,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.0.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.0.1/firebase-database.js"></script>
 <script>
+import { MBTI_BLOCK_LIST } from "./assets/constants";
 import AddPerson from "./components/AddPerson.vue";
-import PersonProfile from "./components/PersonProfile.vue";
-import MbtiMap from "./components/MbtiMap";
+import MbtiBlock from "./components/MbtiBlock";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
@@ -39,8 +43,7 @@ export default {
 	name: "App",
 	components: {
 		AddPerson,
-		PersonProfile,
-		MbtiMap,
+		MbtiBlock,
 	},
 	data() {
 		return {
@@ -98,6 +101,7 @@ export default {
 	},
 	created() {
 		this.getPeople();
+		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
 	},
 };
 </script>
@@ -115,6 +119,12 @@ export default {
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
 	color: #2c3e50;
-	margin-top: 60px;
+	margin-top: 30px;
+}
+
+.mbti-map {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 </style>
