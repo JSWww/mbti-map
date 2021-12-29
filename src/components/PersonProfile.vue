@@ -7,10 +7,18 @@
 				:key="idx"
 			>
 				<img
+					v-if="img"
 					@click="showModal(name, img, mbti, id)"
 					class="photo"
 					v-bind:src="img"
 				/>
+				<img
+					v-else
+					@click="showModal(name, img, mbti, id)"
+					class="photo"
+					v-bind:src="require(`../assets/adriel.jpeg`)"
+				/>
+
 				<br />
 				<label>{{ name }} {{ mbti }}</label>
 			</li>

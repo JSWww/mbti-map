@@ -23,6 +23,7 @@ import PersonProfile from "./components/PersonProfile.vue";
 import MbtiMap from "./components/MbtiMap";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 
 const config = {
 	apiKey: "AIzaSyA2VETiMU4LsgdWu0XdtEvQJ8MMT28FU5M",
@@ -32,9 +33,11 @@ const config = {
 	messagingSenderId: "457163912484",
 	appId: "1:457163912484:web:61fed987eff1c57d3defb1",
 };
+
 firebase.initializeApp(config);
 const db = firebase.firestore();
-
+const storage = firebase.storage();
+//const storageRef = storage.ref();
 export default {
 	name: "App",
 	components: {
@@ -49,28 +52,44 @@ export default {
 	},
 	methods: {
 		addPersonProfile(name, mbti, img) {
-			db.collection("mbtiMap")
-				.add({
-					name: name,
-					mbti: mbti,
-					img: img,
-				})
-				.then(() => {
-					console.log("Success");
-				})
-				.catch(error => {
-					console.error("Error writing:", error);
-				});
-			//TODO-REFACTORING UPDATE
-			this.people = [];
-			this.getPeople();
-		},
-		updatePersonProfile(name, mbti, img, id) {
-			db.collection("mbtiMap").doc(id).update({
-				mbti: mbti,
+			db.collection("mbtiMap").add({
 				name: name,
+				mbti: mbti,
 				img: img,
 			});
+			storage
+				.ref(name + mbti)
+				.put(img)
+				.then(response => {
+					response.ref
+						.getDownloadURL()
+						.then(downloadURL => {
+							this.updatePersonProfile(name, mbti, downloadURL, id);
+						})
+						.catch(err => console.log(err));
+				});
+		},
+		updatePersonProfile(name, mbti, img, id) {
+			if (storage.ref(name + mbti) === null) {
+				storage
+					.ref(name + mbti)
+					.put(img)
+					.then(response => {
+						response.ref.getDownloadURL().then(downloadURL => {
+							db.collection("mbtiMap").doc(id).update({
+								mbti: mbti,
+								name: name,
+								img: downloadURL,
+							});
+						});
+					});
+			} else {
+				db.collection("mbtiMap").doc(id).update({
+					mbti: mbti,
+					name: name,
+					img: img,
+				});
+			}
 
 			//TODO-REFACTORING UPDATE
 			this.people = [];
