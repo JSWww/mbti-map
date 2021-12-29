@@ -1,6 +1,7 @@
 <template>
-	<section class="personProfile">
-		<img
+	<section class="personProfile">		
+    <img
+			v-if="img"
 			@click="
 				showModal(
 					personInfo.name,
@@ -12,6 +13,19 @@
 			class="photo"
 			v-bind:src="personInfo.img"
 		/>
+    <img
+      v-else
+      @click="
+				showModal(
+					personInfo.name,
+					personInfo.img,
+					personInfo.mbti,
+					personInfo.id,
+				)
+			"
+      class="photo"
+      v-bind:src="require(`../assets/adriel.jpeg`)"
+    />
 		<br />
 		<label>{{ personInfo.name }} {{ personInfo.mbti }}</label>
 		<ModalWindow
