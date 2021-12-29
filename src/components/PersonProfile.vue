@@ -42,7 +42,7 @@ export default {
 	data() {
 		return {
 			modalOn: false,
-			id: 0,
+			id: "",
 			name: "",
 			mbti: "",
 			img: "",
