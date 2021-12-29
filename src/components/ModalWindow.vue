@@ -52,7 +52,7 @@
 <script>
 export default {
 	props: {
-		getId: { type: String, default: "" },
+		getId: { type: Number, default: 0 },
 		getName: { type: String, default: "" },
 		getMbti: { type: String, default: "" },
 		getImg: { type: String, default: "" },
@@ -60,17 +60,18 @@ export default {
 	},
 	data() {
 		return {
-			id: "",
+			id: 0,
 			name: "",
 			mbti: "",
 			img: "",
+			file: "",
 		};
 	},
 	methods: {
 		uploadPhoto: function (event) {
-			const file = event.target.files[0];
-			if (file && file.type.match(/^image\/(png|jpeg)$/)) {
-				this.img = window.URL.createObjectURL(file);
+			this.file = event.target.files[0];
+			if (this.file && this.file.type.match(/^image\/(png|jpeg)$/)) {
+				this.img = window.URL.createObjectURL(this.file);
 			} else {
 				this.img = "";
 			}
@@ -80,7 +81,7 @@ export default {
 			if (this.isUpdate) {
 				this.$emit("doUpdate", this.name, this.mbti, this.img, this.id);
 			} else {
-				this.$emit("doAdd", this.name, this.mbti, this.img);
+				this.$emit("doAdd", this.name, this.mbti, this.img, this.file);
 			}
 		},
 	},

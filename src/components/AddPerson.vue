@@ -24,8 +24,8 @@ export default {
 		showModal: function () {
 			this.modalOn = true;
 		},
-		doAdd: function (name, mbti, img) {
-			this.$emit("addPersonProfile", name, mbti, img);
+		doAdd: function (name, mbti, img, file) {
+			this.$emit("addPersonProfile", name, mbti, img, file);
 			this.modalOn = false;
 			this.name = "";
 			this.mbti = "";

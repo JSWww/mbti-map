@@ -51,52 +51,92 @@ export default {
 	data() {
 		return {
 			people: [],
+			id: 0,
 		};
 	},
 	methods: {
-		addPersonProfile(name, mbti, img) {
-			db.collection("mbtiMap").add({
-				name: name,
-				mbti: mbti,
-				img: img,
-			});
+		async addPersonProfile(name, mbti, img, file) {
+			const res = await db.collection("mbtiMap").doc("people").get();
+			let users = res.data().list;
+
 			storage
-				.ref(name + mbti)
-				.put(img)
+				.ref()
+				.child(name + mbti + ".jpg")
+				.put(file)
 				.then(response => {
 					response.ref
 						.getDownloadURL()
 						.then(downloadURL => {
-							this.updatePersonProfile(name, mbti, downloadURL, id);
+							users.push({
+								id: ++this.id,
+								name,
+								mbti,
+								img: img ? downloadURL : null,
+							});
+							console.log(users);
+
+							db.collection("mbtiMap").doc("people").update({
+								list: users,
+							});
+
+							this.people = users;
+							// this.updatePersonProfile(name, mbti, downloadURL, "");
 						})
 						.catch(err => console.log(err));
 				});
+
+			// add({
+			// 	name: name,
+			// 	mbti: mbti,
+			// 	img: img,
+			// });
 		},
 		updatePersonProfile(name, mbti, img, id) {
+			let users;
 			if (storage.ref(name + mbti) === null) {
 				storage
 					.ref(name + mbti)
 					.put(img)
 					.then(response => {
 						response.ref.getDownloadURL().then(downloadURL => {
-							db.collection("mbtiMap").doc(id).update({
-								mbti: mbti,
-								name: name,
-								img: downloadURL,
+							let users = this.people;
+							let personId = this.people.findIndex(
+								({ userId }) => userId === id,
+							);
+
+							users[personId] = {
+								id,
+								name,
+								mbti,
+								img: img ? downloadURL : null,
+							};
+
+							db.collection("mbtiMap").doc("people").update({
+								list: users,
 							});
 						});
 					});
 			} else {
-				db.collection("mbtiMap").doc(id).update({
-					mbti: mbti,
-					name: name,
-					img: img,
+				users = this.people;
+				let personId = this.people.findIndex(({ id }) => id == id);
+
+				users[personId] = {
+					id,
+					name,
+					mbti,
+					img: img ? img : null,
+				};
+				console.log(name);
+				console.log(users);
+
+				db.collection("mbtiMap").doc("people").update({
+					list: users,
 				});
 			}
 
-			//TODO-REFACTORING UPDATE
-			this.people = [];
-			this.getPeople();
+			// TODO-REFACTORING UPDATE
+			this.people = users;
+			// this.getPeople();
 		},
 
 		removePersonProfile(id) {
@@ -119,7 +159,18 @@ export default {
 		},
 	},
 	created() {
-		this.getPeople();
+		// this.getPeople();
+		db.collection("mbtiMap")
+			.doc("people")
+			.get()
+			.then(res => {
+				this.people = res.data().list;
+				this.id = Math.max.apply(
+					Math,
+					this.people.map(({ id }) => id),
+				);
+				console.log(this.id);
+			});
 		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
 	},
 };
