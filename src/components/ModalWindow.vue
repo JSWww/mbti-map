@@ -58,7 +58,7 @@ export default {
 		getImg: { type: String, default: "" },
 		isUpdate: { type: Boolean, default: false },
 	},
-	data: () => {
+	data() {
 		return {
 			id: 0,
 			name: "",

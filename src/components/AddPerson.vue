@@ -12,7 +12,7 @@ export default {
 	components: {
 		ModalWindow,
 	},
-	data: () => {
+	data() {
 		return {
 			modalOn: false,
 			name: "",

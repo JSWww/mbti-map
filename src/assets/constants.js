@@ -1,11 +1,14 @@
-const MBTI_LIST = [
+const MBTI_BLOCK_LIST = [
 	{
-		id: 0,
 		title: "Analysts 분석가형",
-		bgColor: "rgba(244, 240, 247, 0.8)",
+		barColor: "rgba(244, 240, 247, 0.8)",
 		textColor: "rgba(144, 101, 176, 1)",
-		types: [
-			{ type: "INTJ", description: "용의주도한 전략가", keyword: "Architect" },
+		mbtiTypes: [
+			{
+				type: "INTJ",
+				description: "용의주도한 전략가",
+				keyword: "Architect",
+			},
 			{ type: "INTP", description: "논리적인 사색가", keyword: "Logician" },
 			{ type: "ENTJ", description: "대담한 통솔자", keyword: "Commander" },
 			{
@@ -16,11 +19,10 @@ const MBTI_LIST = [
 		],
 	},
 	{
-		id: 1,
 		title: "Diplomats 외교관형",
-		bgColor: "rgba(237, 243, 236, 1)",
+		barColor: "rgba(237, 243, 236, 1)",
 		textColor: "rgba(68, 131, 97, 1)",
-		types: [
+		mbtiTypes: [
 			{ type: "INFJ", description: "선의의 옹호자", keyword: "Advocate" },
 			{ type: "INFP", description: "열정적인 중재자", keyword: "Mediator" },
 			{
@@ -32,11 +34,10 @@ const MBTI_LIST = [
 		],
 	},
 	{
-		id: 2,
 		title: "Sentinels 관리자형",
-		bgColor: "rgba(231, 243, 248, 1)",
+		barColor: "rgba(231, 243, 248, 1)",
 		textColor: "rgba(51, 126, 169, 1)",
-		types: [
+		mbtiTypes: [
 			{
 				type: "ISTJ",
 				description: "청렴결백한 논리주의자",
@@ -48,11 +49,10 @@ const MBTI_LIST = [
 		],
 	},
 	{
-		id: 3,
 		title: "Explorers 탐험가형",
-		bgColor: "rgba(251, 243, 219, 1)",
+		barColor: "rgba(251, 243, 219, 1)",
 		textColor: "rgba(203, 145, 47, 1)",
-		types: [
+		mbtiTypes: [
 			{ type: "ISTP", description: "만능 재주꾼", keyword: "Virtuoso" },
 			{
 				type: "ISFP",
@@ -118,4 +118,4 @@ const DUMMY_DATA = [
 	},
 ];
 
-export { MBTI_LIST, DUMMY_DATA };
+export { MBTI_BLOCK_LIST, DUMMY_DATA };

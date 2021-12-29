@@ -1,28 +1,34 @@
 <template>
 	<div id="app">
-		<section class="people">
-			<PersonProfile
+		<h1>Adriel's MBTI Map</h1>
+		<AddPerson @addPersonProfile="addPersonProfile" />
+		<div class="mbti-map">
+			<MbtiBlock
+				v-for="(MBTI_BLOCK_DATA, idx) in MBTI_BLOCK_LIST"
+				:key="idx"
+				v-bind="MBTI_BLOCK_DATA"
 				:people="people"
 				@removePersonProfile="removePersonProfile"
 				@updatePersonProfile="updatePersonProfile"
+				v-on="$listeners"
 			/>
-		</section>
-		<AddPerson @addPersonProfile="addPersonProfile" />
-    <MbtiMap />
+		</div>
 	</div>
 </template>
 
 <script>
+import { MBTI_BLOCK_LIST } from "./assets/constants";
 import AddPerson from "./components/AddPerson.vue";
-import PersonProfile from "./components/PersonProfile.vue";
-import MbtiMap from "./components/MbtiMap";
+import MbtiBlock from "./components/MbtiBlock";
 
 export default {
 	name: "App",
 	components: {
 		AddPerson,
-		PersonProfile,
-    MbtiMap,
+		MbtiBlock,
+	},
+	created() {
+		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
 	},
 	data() {
 		return {
@@ -55,6 +61,7 @@ export default {
 			];
 		},
 		updatePersonProfile(name, mbti, img, id) {
+			console.log("updateprofile");
 			const people = [...this.people];
 			const person = people.find(person => person.id === id);
 
@@ -67,6 +74,7 @@ export default {
 		},
 
 		removePersonProfile(id) {
+			console.log("remove");
 			this.people = this.people.filter(person => person.id !== id);
 		},
 	},
@@ -86,6 +94,12 @@ export default {
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
 	color: #2c3e50;
-	margin-top: 60px;
+	margin-top: 30px;
+}
+
+.mbti-map {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 </style>

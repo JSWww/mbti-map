@@ -1,30 +1,30 @@
 <template>
 	<section class="personProfile">
-		<ul class="people-list">
-			<li
-				class="person"
-				v-for="({ id, name, img, mbti }, idx) in people"
-				:key="idx"
-			>
-				<img
-					@click="showModal(name, img, mbti, id)"
-					class="photo"
-					v-bind:src="img"
-				/>
-				<br />
-				<label>{{ name }} {{ mbti }}</label>
-			</li>
-		</ul>
+		<img
+			@click="
+				showModal(
+					personInfo.name,
+					personInfo.img,
+					personInfo.mbti,
+					personInfo.id,
+				)
+			"
+			class="photo"
+			v-bind:src="personInfo.img"
+		/>
+		<br />
+		<label>{{ personInfo.name }} {{ personInfo.mbti }}</label>
 		<ModalWindow
 			v-if="modalOn"
 			@close="closeModal"
 			@doUpdate="doUpdate"
 			@doRemove="doRemove"
-			:getId="id"
-			:getName="name"
-			:getMbti="mbti"
-			:getImg="img"
+			:getId="personInfo.id"
+			:getName="personInfo.name"
+			:getMbti="personInfo.mbti"
+			:getImg="personInfo.img"
 			:isUpdate="isUpdate"
+			v-on="$listeners"
 		>
 		</ModalWindow>
 	</section>
@@ -32,9 +32,10 @@
 
 <script>
 import ModalWindow from "./ModalWindow.vue";
+
 export default {
 	props: {
-		people: { type: Array, default: () => [] },
+		personInfo: { type: Object, default: () => {} },
 	},
 	components: {
 		ModalWindow,
