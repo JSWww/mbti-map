@@ -16,10 +16,28 @@
 	</div>
 </template>
 
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/vuefire@1.3.0/dist/vuefire.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.1/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.1/firebase-database.js"></script>
 <script>
 import { MBTI_BLOCK_LIST } from "./assets/constants";
 import AddPerson from "./components/AddPerson.vue";
 import MbtiBlock from "./components/MbtiBlock";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+
+const config = {
+	apiKey: "AIzaSyA2VETiMU4LsgdWu0XdtEvQJ8MMT28FU5M",
+	authDomain: "mbtimap-dad6b.firebaseapp.com",
+	projectId: "mbtimap-dad6b",
+	storageBucket: "mbtimap-dad6b.appspot.com",
+	messagingSenderId: "457163912484",
+	appId: "1:457163912484:web:61fed987eff1c57d3defb1",
+};
+firebase.initializeApp(config);
+const db = firebase.firestore();
 
 export default {
 	name: "App",
@@ -32,51 +50,60 @@ export default {
 	},
 	data() {
 		return {
-			people: [
-				{
-					id: 0,
-					name: "Luna",
-					mbti: "ENFJ",
-					img: "",
-				},
-				{
-					id: 1,
-					name: "SW",
-					mbti: "ISFJ",
-					img: "",
-				},
-			],
+			people: [],
 		};
 	},
 	methods: {
 		addPersonProfile(name, mbti, img) {
-			this.people = [
-				...this.people,
-				{
-					id: this.people.length,
-					name,
-					mbti,
-					img,
-				},
-			];
+			db.collection("mbtiMap")
+				.add({
+					name: name,
+					mbti: mbti,
+					img: img,
+				})
+				.then(() => {
+					console.log("Success");
+				})
+				.catch(error => {
+					console.error("Error writing:", error);
+				});
+			//TODO-REFACTORING UPDATE
+			this.people = [];
+			this.getPeople();
 		},
 		updatePersonProfile(name, mbti, img, id) {
-			console.log("updateprofile");
-			const people = [...this.people];
-			const person = people.find(person => person.id === id);
+			db.collection("mbtiMap").doc(id).update({
+				mbti: mbti,
+				name: name,
+				img: img,
+			});
 
-			if (person) {
-				person.name = name;
-				person.mbti = mbti;
-				person.img = img;
-				this.people = people;
-			}
+			//TODO-REFACTORING UPDATE
+			this.people = [];
+			this.getPeople();
 		},
 
 		removePersonProfile(id) {
-			console.log("remove");
-			this.people = this.people.filter(person => person.id !== id);
+			db.collection("mbtiMap").doc(id).delete();
 		},
+
+		getPeople() {
+			db.collection("mbtiMap")
+				.get()
+				.then(querySnapshot => {
+					querySnapshot.forEach(doc => {
+						this.people.push({
+							id: `${doc.id}`,
+							name: `${doc.data().name}`,
+							mbti: `${doc.data().mbti}`,
+							img: `${doc.data().img}`,
+						});
+					});
+				});
+		},
+	},
+	created() {
+		this.getPeople();
 	},
 };
 </script>

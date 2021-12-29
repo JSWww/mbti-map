@@ -52,7 +52,7 @@
 <script>
 export default {
 	props: {
-		getId: { type: Number, default: 0 },
+		getId: { type: String, default: "" },
 		getName: { type: String, default: "" },
 		getMbti: { type: String, default: "" },
 		getImg: { type: String, default: "" },
@@ -60,7 +60,7 @@ export default {
 	},
 	data() {
 		return {
-			id: 0,
+			id: "",
 			name: "",
 			mbti: "",
 			img: "",
