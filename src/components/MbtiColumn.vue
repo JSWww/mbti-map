@@ -1,25 +1,32 @@
 <template>
 	<div class="mbti-column">
-		<div class="bar" :style="{ background: bgColor }">
+		<div class="bar" :style="{ background: barColor }">
 			<div v-for="item in mbtiList" :key="item.id">
-				<div>{{ item.name }}</div>
+				<PersonProfile :personInfo="item" v-on="$listeners" />
 			</div>
 		</div>
 		<div class="explanation">
-			<div>{{ mbtiType.type }}</div>
-			<div :style="{ color: textColor }">{{ mbtiType.description }}</div>
-			<div :style="{ color: textColor }">{{ mbtiType.keyword }}</div>
+			<div>{{ type }}</div>
+			<div :style="{ color: textColor }">{{ description }}</div>
+			<div :style="{ color: textColor }">{{ keyword }}</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import PersonProfile from "./PersonProfile.vue";
+
 export default {
 	props: {
-		mbtiType: { type: Object, default: () => {} },
-		bgColor: { type: String, default: () => "" },
-		textColor: { type: String, default: () => "" },
+		barColor: { type: String, default: "" },
+		textColor: { type: String, default: "" },
+		type: { type: String, default: "" },
+		description: { type: String, default: "" },
+		keyword: { type: String, default: "" },
 		mbtiList: { type: Array, default: () => [] },
+	},
+	components: {
+		PersonProfile,
 	},
 };
 </script>
