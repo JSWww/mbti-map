@@ -30,7 +30,12 @@
 							<option>INFP</option>
 						</select>
 						<h5>Photo</h5>
-						<input type="file" class="info" v-on:change="uploadPhoto" />
+						<input
+							type="file"
+							class="info"
+							accept="image/*"
+							v-on:change="uploadPhoto"
+						/>
 						<div v-if="img"><img class="preview" v-bind:src="img" /></div>
 						<br />
 						<div class="footer">
@@ -52,7 +57,7 @@
 <script>
 export default {
 	props: {
-		getId: { type: String, default: "" },
+		getId: { type: Number, default: 0 },
 		getName: { type: String, default: "" },
 		getMbti: { type: String, default: "" },
 		getImg: { type: String, default: "" },
@@ -60,17 +65,18 @@ export default {
 	},
 	data() {
 		return {
-			id: "",
-			name: "",
-			mbti: "",
-			img: "",
+			id: this.getId,
+			name: this.getName,
+			mbti: this.getMbti,
+			img: this.getImg,
+			file: null,
 		};
 	},
 	methods: {
 		uploadPhoto: function (event) {
-			const file = event.target.files[0];
-			if (file && file.type.match(/^image\/(png|jpeg)$/)) {
-				this.img = window.URL.createObjectURL(file);
+			this.file = event.target.files[0];
+			if (this.file && this.file.type.match(/^image\/(png|jpeg)$/)) {
+				this.img = window.URL.createObjectURL(this.file);
 			} else {
 				this.img = "";
 			}
@@ -78,17 +84,11 @@ export default {
 
 		giveInfo: function () {
 			if (this.isUpdate) {
-				this.$emit("doUpdate", this.name, this.mbti, this.img, this.id);
+				this.$emit("doUpdate", this.name, this.mbti, this.file, this.id);
 			} else {
-				this.$emit("doAdd", this.name, this.mbti, this.img);
+				this.$emit("doAdd", this.name, this.mbti, this.file);
 			}
 		},
-	},
-	created() {
-		this.name = this.getName;
-		this.mbti = this.getMbti;
-		this.img = this.getImg;
-		this.id = this.getId;
 	},
 };
 </script>

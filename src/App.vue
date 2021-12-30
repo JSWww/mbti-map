@@ -51,75 +51,123 @@ export default {
 	data() {
 		return {
 			people: [],
+			id: -1,
 		};
 	},
 	methods: {
-		addPersonProfile(name, mbti, img) {
-			db.collection("mbtiMap").add({
-				name: name,
-				mbti: mbti,
-				img: img,
-			});
+		async addPersonProfile(name, mbti, file) {
+			let users = this.people;
+
 			storage
-				.ref(name + mbti)
-				.put(img)
+				.ref()
+				.child(name + mbti + ".jpg")
+				.put(file)
 				.then(response => {
 					response.ref
 						.getDownloadURL()
 						.then(downloadURL => {
-							this.updatePersonProfile(name, mbti, downloadURL, id);
+							users.push({
+								id: ++this.id,
+								name,
+								mbti,
+								img: file ? downloadURL : null,
+							});
+
+							db.collection("mbtiMap")
+								.doc("people")
+								.update({
+									list: users,
+								})
+								.then(() => (this.people = users));
 						})
 						.catch(err => console.log(err));
 				});
 		},
-		updatePersonProfile(name, mbti, img, id) {
-			if (storage.ref(name + mbti) === null) {
+		updatePersonProfile(name, mbti, file, id) {
+			let users = this.people;
+			const user = users.find(user => user.id === id);
+			const userIdx = users.findIndex(user => user.id === id);
+
+			users.splice(userIdx, 1);
+
+			if (user.img) {
 				storage
-					.ref(name + mbti)
-					.put(img)
-					.then(response => {
-						response.ref.getDownloadURL().then(downloadURL => {
-							db.collection("mbtiMap").doc(id).update({
-								mbti: mbti,
-								name: name,
-								img: downloadURL,
-							});
-						});
-					});
-			} else {
-				db.collection("mbtiMap").doc(id).update({
-					mbti: mbti,
-					name: name,
-					img: img,
-				});
+					.ref()
+					.child(user.name + user.mbti + ".jpg")
+					.delete();
 			}
 
-			//TODO-REFACTORING UPDATE
-			this.people = [];
-			this.getPeople();
+			if (file) {
+				storage
+					.ref()
+					.child(name + mbti + ".jpg")
+					.put(file)
+					.then(response => {
+						response.ref
+							.getDownloadURL()
+							.then(downloadURL => {
+								users.push({
+									id,
+									name,
+									mbti,
+									img: downloadURL,
+								});
+
+								db.collection("mbtiMap")
+									.doc("people")
+									.update({
+										list: users,
+									})
+									.then(() => (this.people = users));
+							})
+							.catch(err => console.log(err));
+					});
+			} else {
+				users.push({
+					id,
+					name,
+					mbti,
+					img: user.img,
+				});
+
+				db.collection("mbtiMap")
+					.doc("people")
+					.update({
+						list: users,
+					})
+					.then(() => (this.people = users));
+			}
 		},
 
 		removePersonProfile(id) {
-			db.collection("mbtiMap").doc(id).delete();
-		},
+			let users = this.people;
+			let userIdx = users.findIndex(user => user.id === id);
 
-		getPeople() {
+			users.splice(userIdx, 1);
+
 			db.collection("mbtiMap")
-				.get()
-				.then(querySnapshot => {
-					querySnapshot.forEach(doc => {
-						this.people.push({
-							id: `${doc.id}`,
-							name: `${doc.data().name}`,
-							mbti: `${doc.data().mbti}`,
-							img: `${doc.data().img}`,
-						});
-					});
-				});
+				.doc("people")
+				.update({
+					list: users,
+				})
+				.then(() => (this.people = users));
 		},
 	},
 	created() {
-		this.getPeople();
+		db.collection("mbtiMap")
+			.doc("people")
+			.get()
+			.then(res => {
+				this.people = res.data().list;
+
+				if (this.people.length) {
+					this.id = Math.max.apply(
+						null,
+						this.people.map(({ id }) => id),
+					);
+				}
+			});
+
 		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
 	},
 };
