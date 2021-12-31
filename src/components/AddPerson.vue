@@ -18,14 +18,14 @@ export default {
 		};
 	},
 	methods: {
-		showModal: function () {
+		showModal() {
 			this.modalOn = true;
 		},
-		doAdd: function (name, mbti, file) {
+		doAdd(name, mbti, file) {
 			this.$emit("addPersonProfile", name, mbti, file);
 			this.modalOn = false;
 		},
-		closeModal: function () {
+		closeModal() {
 			this.modalOn = false;
 		},
 	},
@@ -47,6 +47,7 @@ button:not(.close) {
 	transition: all 0.3s ease 0s;
 	cursor: pointer;
 	outline: none;
+	margin-top: 1em;
 }
 button:not(.close):hover {
 	background-color: rgba(25, 43, 77);

@@ -12,22 +12,9 @@
 						<input type="text" class="info" v-model="name" />
 						<h5>MBTI</h5>
 						<select class="info" v-model="mbti">
-							<option>ESTJ</option>
-							<option>ESTP</option>
-							<option>ESFJ</option>
-							<option>ESFP</option>
-							<option>ENTJ</option>
-							<option>ENTP</option>
-							<option>ENFJ</option>
-							<option>ENFP</option>
-							<option>ISTJ</option>
-							<option>ISTP</option>
-							<option>ISFJ</option>
-							<option>ISFP</option>
-							<option>INTJ</option>
-							<option>INTP</option>
-							<option>INFJ</option>
-							<option>INFP</option>
+							<option v-for="(MBTI_TYPE, idx) in MBTI_TYPE_LIST" :key="idx">
+								{{ MBTI_TYPE }}
+							</option>
 						</select>
 						<h5>Photo</h5>
 						<input
@@ -55,6 +42,8 @@
 </template>
 
 <script>
+import { MBTI_TYPE_LIST } from "../assets/constants";
+
 export default {
 	props: {
 		getId: { type: Number, default: 0 },
@@ -73,7 +62,7 @@ export default {
 		};
 	},
 	methods: {
-		uploadPhoto: function (event) {
+		uploadPhoto(event) {
 			this.file = event.target.files[0];
 			if (this.file && this.file.type.match(/^image\/(png|jpeg)$/)) {
 				this.img = window.URL.createObjectURL(this.file);
@@ -82,13 +71,16 @@ export default {
 			}
 		},
 
-		giveInfo: function () {
+		giveInfo() {
 			if (this.isUpdate) {
 				this.$emit("doUpdate", this.name, this.mbti, this.file, this.id);
 			} else {
 				this.$emit("doAdd", this.name, this.mbti, this.file);
 			}
 		},
+	},
+	created() {
+		this.MBTI_TYPE_LIST = MBTI_TYPE_LIST;
 	},
 };
 </script>

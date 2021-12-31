@@ -73,49 +73,23 @@ const MBTI_BLOCK_LIST = [
 	},
 ];
 
-const DUMMY_DATA = [
-	{
-		id: 0,
-		name: "test1",
-		mbti: "INTJ",
-		img: "nothing",
-	},
-	{
-		id: 1,
-		name: "test2",
-		mbti: "INTJ",
-		img: "nothing",
-	},
-	{
-		id: 2,
-		name: "testtest",
-		mbti: "INTJ",
-		img: "nothing",
-	},
-	{
-		id: 3,
-		name: "Seongwon",
-		mbti: "ESTP",
-		img: "nothing",
-	},
-	{
-		id: 4,
-		name: "ABCDEFGHIJKLMN",
-		mbti: "ISFJ",
-		img: "nothing",
-	},
-	{
-		id: 5,
-		name: "test",
-		mbti: "ENTP",
-		img: "nothing",
-	},
-	{
-		id: 6,
-		name: "test",
-		mbti: "INTJ",
-		img: "nothing",
-	},
+const MBTI_TYPE_LIST = [
+	"ESTJ",
+	"ESTP",
+	"ESFJ",
+	"ESFP",
+	"ENTJ",
+	"ENTP",
+	"ENFJ",
+	"ENFP",
+	"ISTJ",
+	"ISTP",
+	"ISFJ",
+	"ISFP",
+	"INTJ",
+	"INTP",
+	"INFJ",
+	"INFP",
 ];
 
-export { MBTI_BLOCK_LIST, DUMMY_DATA };
+export { MBTI_BLOCK_LIST, MBTI_TYPE_LIST };

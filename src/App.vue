@@ -16,32 +16,12 @@
 	</div>
 </template>
 
-<script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/vuefire@1.3.0/dist/vuefire.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.0.1/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.0.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.0.1/firebase-database.js"></script>
 <script>
 import { MBTI_BLOCK_LIST } from "./assets/constants";
+import { firebaseDB, firebaseStorage } from "./firebase";
 import AddPerson from "./components/AddPerson.vue";
 import MbtiBlock from "./components/MbtiBlock";
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
 
-const config = {
-	apiKey: process.env.VUE_APP_FIREBASE_APIKEY,
-	authDomain: process.env.VUE_APP_FIREBASE_AUTHDOMAIN,
-	projectId: process.env.VUE_APP_FIREBASE_PROJECTID,
-	storageBucket: process.env.VUE_APP_FIREBASE_STORAGEBUCKET,
-	messagingSenderId: process.env.VUE_APP_FIREABSE_MESSAGINGSENDERID,
-	appId: process.env.VUE_APP_FIREBASE_APPID,
-};
-
-firebase.initializeApp(config);
-const db = firebase.firestore();
-const storage = firebase.storage();
-//const storageRef = storage.ref();
 export default {
 	name: "App",
 	components: {
@@ -55,106 +35,108 @@ export default {
 		};
 	},
 	methods: {
-		async addPersonProfile(name, mbti, file) {
-			let users = this.people;
-
-			storage
-				.ref()
-				.child(name + mbti + ".jpg")
-				.put(file)
-				.then(response => {
-					response.ref
-						.getDownloadURL()
-						.then(downloadURL => {
-							users.push({
-								id: ++this.id,
+		addPersonProfile(name, mbti, file) {
+			if (file) {
+				firebaseStorage
+					.ref()
+					.child(++this.id + ".jpg")
+					.put(file)
+					.then(response => {
+						response.ref.getDownloadURL().then(downloadURL => {
+							this.people.push({
+								id: this.id,
 								name,
 								mbti,
-								img: file ? downloadURL : null,
+								img: downloadURL,
 							});
 
-							db.collection("mbtiMap")
-								.doc("people")
-								.update({
-									list: users,
-								})
-								.then(() => (this.people = users));
-						})
-						.catch(err => console.log(err));
+							firebaseDB.collection("mbtiMap").doc("people").update({
+								list: this.people,
+							});
+						});
+					});
+			} else {
+				this.people.push({
+					id: ++this.id,
+					name,
+					mbti,
+					img: null,
 				});
+
+				firebaseDB.collection("mbtiMap").doc("people").update({
+					list: this.people,
+				});
+			}
 		},
 		updatePersonProfile(name, mbti, file, id) {
-			let users = this.people;
-			const user = users.find(user => user.id === id);
-			const userIdx = users.findIndex(user => user.id === id);
+			const person = this.people.find(person => person.id === id);
+			const personIdx = this.people.findIndex(person => person.id === id);
 
-			users.splice(userIdx, 1);
+			this.people.splice(personIdx, 1);
 
-			if (user.img) {
-				storage
+			if (person.img && file) {
+				firebaseStorage
 					.ref()
-					.child(user.name + user.mbti + ".jpg")
+					.child(id + ".jpg")
 					.delete();
 			}
 
 			if (file) {
-				storage
+				firebaseStorage
 					.ref()
-					.child(name + mbti + ".jpg")
+					.child(id + ".jpg")
 					.put(file)
 					.then(response => {
-						response.ref
-							.getDownloadURL()
-							.then(downloadURL => {
-								users.push({
-									id,
-									name,
-									mbti,
-									img: downloadURL,
-								});
+						response.ref.getDownloadURL().then(downloadURL => {
+							this.people.push({
+								id,
+								name,
+								mbti,
+								img: downloadURL,
+							});
 
-								db.collection("mbtiMap")
-									.doc("people")
-									.update({
-										list: users,
-									})
-									.then(() => (this.people = users));
-							})
-							.catch(err => console.log(err));
+							firebaseDB.collection("mbtiMap").doc("people").update({
+								list: this.people,
+							});
+						});
 					});
 			} else {
-				users.push({
+				this.people.push({
 					id,
 					name,
 					mbti,
-					img: user.img,
+					img: person.img,
 				});
 
-				db.collection("mbtiMap")
-					.doc("people")
-					.update({
-						list: users,
-					})
-					.then(() => (this.people = users));
+				firebaseDB.collection("mbtiMap").doc("people").update({
+					list: this.people,
+				});
 			}
 		},
 
 		removePersonProfile(id) {
-			let users = this.people;
-			let userIdx = users.findIndex(user => user.id === id);
+			let userIdx = this.people.findIndex(user => user.id === id);
 
-			users.splice(userIdx, 1);
+			if (this.people[userIdx].img) {
+				firebaseStorage
+					.ref()
+					.child(id + ".jpg")
+					.delete();
+			}
 
-			db.collection("mbtiMap")
-				.doc("people")
-				.update({
-					list: users,
-				})
-				.then(() => (this.people = users));
+			this.people.splice(userIdx, 1);
+			firebaseDB.collection("mbtiMap").doc("people").update({
+				list: this.people,
+			});
 		},
 	},
 	created() {
-		db.collection("mbtiMap")
+		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
+		this.firebaseDB = firebaseDB;
+		this.firebaseStorage = firebaseStorage;
+
+		firebaseDB
+			.collection("mbtiMap")
 			.doc("people")
 			.get()
 			.then(res => {
@@ -167,8 +149,6 @@ export default {
 					);
 				}
 			});
-
-		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
 	},
 };
 </script>

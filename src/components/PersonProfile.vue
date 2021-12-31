@@ -2,27 +2,13 @@
 	<section class="personProfile">
 		<img
 			v-if="personInfo.img"
-			@click="
-				showModal(
-					personInfo.name,
-					personInfo.img,
-					personInfo.mbti,
-					personInfo.id,
-				)
-			"
+			@click="showModal"
 			class="photo"
 			v-bind:src="personInfo.img"
 		/>
 		<img
 			v-else
-			@click="
-				showModal(
-					personInfo.name,
-					personInfo.img,
-					personInfo.mbti,
-					personInfo.id,
-				)
-			"
+			@click="showModal"
 			class="photo"
 			v-bind:src="require(`../assets/adriel.jpeg`)"
 		/>
@@ -57,39 +43,25 @@ export default {
 	data() {
 		return {
 			modalOn: false,
-			id: "",
-			name: "",
-			mbti: "",
-			img: "",
 			isUpdate: true,
 		};
 	},
 	methods: {
-		showModal: function (name, img, mbti, id) {
-			this.name = name;
-			this.img = img;
-			this.mbti = mbti;
-			this.id = id;
+		showModal() {
 			this.modalOn = true;
 		},
-		doUpdate: function (name, mbti, file, id) {
+		doUpdate(name, mbti, file, id) {
 			this.$emit("updatePersonProfile", name, mbti, file, id);
 			this.modalOn = false;
-			this.name = "";
-			this.mbti = "";
-			this.img = "";
 		},
-		doRemove: function (id) {
+		doRemove(id) {
 			let remove = confirm("Delete?");
 			if (remove) {
 				this.$emit("removePersonProfile", id);
 			}
 		},
-		closeModal: function () {
+		closeModal() {
 			this.modalOn = false;
-			this.name = "";
-			this.mbti = "";
-			this.img = "";
 		},
 	},
 };

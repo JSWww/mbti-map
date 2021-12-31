@@ -19,7 +19,6 @@
 
 <script>
 import MbtiColumn from "./MbtiColumn";
-import { DUMMY_DATA } from "../assets/constants";
 
 export default {
 	name: "MbtiBlock",
@@ -32,9 +31,6 @@ export default {
 		textColor: { type: String, default: "" },
 		mbtiTypes: { type: Array, default: () => [] },
 		people: { type: Array, default: () => [] },
-	},
-	created() {
-		this.DUMMY_DATA = DUMMY_DATA;
 	},
 	methods: {
 		mbtiList(type) {
