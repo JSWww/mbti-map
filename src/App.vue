@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import { MBTI_BLOCK_LIST } from "./assets/constants";
-import { firebaseDB, firebaseStorage } from "./firebase";
-import AddPerson from "./components/AddPerson.vue";
-import MbtiBlock from "./components/MbtiBlock";
+import { MBTI_BLOCK_LIST } from "@/assets/constants.js";
+import { firebaseDB, firebaseStorage } from "@/firebase.js";
+import AddPerson from "@/components/AddPerson.vue";
+import MbtiBlock from "@/components/MbtiBlock.vue";
 
 export default {
 	name: "App",

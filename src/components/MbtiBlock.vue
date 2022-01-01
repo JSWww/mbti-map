@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import MbtiColumn from "./MbtiColumn";
+import MbtiColumn from "@/components/MbtiColumn.vue";
 
 export default {
 	name: "MbtiBlock",

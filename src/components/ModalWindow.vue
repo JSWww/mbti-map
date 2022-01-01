@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { MBTI_TYPE_LIST } from "../assets/constants";
+import { MBTI_TYPE_LIST } from "@/assets/constants.js";
 
 export default {
 	props: {

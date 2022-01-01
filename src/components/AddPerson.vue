@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import ModalWindow from "./ModalWindow.vue";
+import ModalWindow from "@/components/ModalWindow.vue";
+
 export default {
 	components: {
 		ModalWindow,

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import PersonProfile from "./PersonProfile.vue";
+import PersonProfile from "@/components/PersonProfile.vue";
 
 export default {
 	props: {
