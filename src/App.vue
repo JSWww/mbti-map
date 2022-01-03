@@ -4,9 +4,9 @@
 		<AddPerson @addPersonProfile="addPersonProfile" />
 		<div class="mbti-map">
 			<MbtiBlock
-				v-for="(MBTI_BLOCK_DATA, idx) in MBTI_BLOCK_LIST"
+				v-for="(MBTI_BLOCK, idx) in MBTI_BLOCK_DATA"
 				:key="idx"
-				v-bind="MBTI_BLOCK_DATA"
+				:MBTI_BLOCK="MBTI_BLOCK"
 				:people="people"
 				@removePersonProfile="removePersonProfile"
 				@updatePersonProfile="updatePersonProfile"
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { MBTI_BLOCK_LIST } from "@/assets/constants.js";
+import { MBTI_BLOCK_DATA } from "@/assets/constants.js";
 import { firebaseDB, firebaseStorage } from "@/firebase.js";
 import AddPerson from "@/components/AddPerson.vue";
 import MbtiBlock from "@/components/MbtiBlock.vue";
@@ -33,6 +33,26 @@ export default {
 			people: [],
 			id: -1,
 		};
+	},
+	created() {
+		this.MBTI_BLOCK_DATA = MBTI_BLOCK_DATA;
+		this.firebaseDB = firebaseDB;
+		this.firebaseStorage = firebaseStorage;
+
+		firebaseDB
+			.collection("mbtiMap")
+			.doc("people")
+			.get()
+			.then(res => {
+				this.people = res.data().list;
+
+				if (this.people.length) {
+					this.id = Math.max.apply(
+						null,
+						this.people.map(({ id }) => id),
+					);
+				}
+			});
 	},
 	methods: {
 		addPersonProfile(name, mbti, file) {
@@ -129,26 +149,6 @@ export default {
 				list: this.people,
 			});
 		},
-	},
-	created() {
-		this.MBTI_BLOCK_LIST = MBTI_BLOCK_LIST;
-		this.firebaseDB = firebaseDB;
-		this.firebaseStorage = firebaseStorage;
-
-		firebaseDB
-			.collection("mbtiMap")
-			.doc("people")
-			.get()
-			.then(res => {
-				this.people = res.data().list;
-
-				if (this.people.length) {
-					this.id = Math.max.apply(
-						null,
-						this.people.map(({ id }) => id),
-					);
-				}
-			});
 	},
 };
 </script>

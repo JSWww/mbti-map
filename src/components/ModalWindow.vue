@@ -12,8 +12,8 @@
 						<input type="text" class="info" v-model="name" />
 						<h5>MBTI</h5>
 						<select class="info" v-model="mbti">
-							<option v-for="(MBTI_TYPE, idx) in MBTI_TYPE_LIST" :key="idx">
-								{{ MBTI_TYPE }}
+							<option v-for="(MBTI_TYPE, idx) in MBTI_LIST" :key="idx">
+								{{ MBTI_TYPE.mbtiType }}
 							</option>
 						</select>
 						<h5>Photo</h5>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { MBTI_TYPE_LIST } from "@/assets/constants.js";
+import { MBTI_LIST } from "@/assets/constants.js";
 
 export default {
 	props: {
@@ -80,7 +80,7 @@ export default {
 		},
 	},
 	created() {
-		this.MBTI_TYPE_LIST = MBTI_TYPE_LIST;
+		this.MBTI_LIST = MBTI_LIST;
 	},
 };
 </script>

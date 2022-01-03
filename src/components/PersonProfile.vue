@@ -10,7 +10,7 @@
 			v-else
 			@click="showModal"
 			class="photo"
-			v-bind:src="require(`../assets/adriel.jpeg`)"
+			v-bind:src="require('@/assets/adriel.jpeg')"
 		/>
 		<br />
 		<label>{{ personInfo.name }}</label>

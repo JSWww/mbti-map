@@ -1,16 +1,14 @@
 <template>
 	<div class="mbti-block">
-		<h2 :style="{ color: textColor }">
-			{{ title }}
+		<h2 :style="{ color: MBTI_BLOCK.textColor }">
+			{{ MBTI_BLOCK.title }}
 		</h2>
 		<div class="columns">
 			<MbtiColumn
-				v-for="(mbtiType, idx) in mbtiTypes"
+				v-for="(MBTI_TYPE, idx) in MBTI_BLOCK.mbtiTypes"
 				:key="idx"
-				:barColor="barColor"
-				:textColor="textColor"
-				v-bind="mbtiType"
-				:mbtiList="mbtiList(mbtiType.type)"
+				:MBTI_TYPE="MBTI_TYPE"
+				:filteredPeople="getPeopleByMbtiType(MBTI_TYPE)"
 				v-on="$listeners"
 			/>
 		</div>
@@ -26,15 +24,12 @@ export default {
 		MbtiColumn,
 	},
 	props: {
-		title: { type: String, default: "" },
-		barColor: { type: String, default: "" },
-		textColor: { type: String, default: "" },
-		mbtiTypes: { type: Array, default: () => [] },
+		MBTI_BLOCK: { type: Object, default: () => {} },
 		people: { type: Array, default: () => [] },
 	},
 	methods: {
-		mbtiList(type) {
-			return this.people.filter(data => data.mbti === type);
+		getPeopleByMbtiType(mbtiType) {
+			return this.people.filter(item => item.mbti === mbtiType);
 		},
 	},
 };

@@ -1,32 +1,39 @@
 <template>
 	<div class="mbti-column">
-		<div class="bar" :style="{ background: barColor }">
-			<div v-for="item in mbtiList" :key="item.id">
+		<div class="bar" :style="{ background: MBTI_COLUMN.barColor }">
+			<div v-for="item in filteredPeople" :key="item.id">
 				<PersonProfile :personInfo="item" v-on="$listeners" />
 			</div>
 		</div>
 		<div class="explanation">
-			<div>{{ type }}</div>
-			<div :style="{ color: textColor }">{{ description }}</div>
-			<div :style="{ color: textColor }">{{ keyword }}</div>
+			<div>{{ MBTI_COLUMN.mbtiType }}</div>
+			<div :style="{ color: MBTI_COLUMN.textColor }">
+				{{ MBTI_COLUMN.description }}
+			</div>
+			<div :style="{ color: MBTI_COLUMN.textColor }">
+				{{ MBTI_COLUMN.keyword }}
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import { MBTI_COLUMN_DATA } from "@/assets/constants.js";
 import PersonProfile from "@/components/PersonProfile.vue";
 
 export default {
-	props: {
-		barColor: { type: String, default: "" },
-		textColor: { type: String, default: "" },
-		type: { type: String, default: "" },
-		description: { type: String, default: "" },
-		keyword: { type: String, default: "" },
-		mbtiList: { type: Array, default: () => [] },
-	},
+	name: "MbtiColumn",
 	components: {
 		PersonProfile,
+	},
+	props: {
+		MBTI_TYPE: { type: String, default: "" },
+		filteredPeople: { type: Array, default: () => [] },
+	},
+	created() {
+		this.MBTI_COLUMN = MBTI_COLUMN_DATA.filter(
+			item => item.mbtiType === this.MBTI_TYPE,
+		)[0];
 	},
 };
 </script>
