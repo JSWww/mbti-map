@@ -1,8 +1,15 @@
 <template>
 	<div class="mbti-column">
-		<div class="bar" :style="{ background: MBTI_COLUMN.barColor }">
-			<div v-for="item in filteredPeople" :key="item.id">
-				<PersonProfile :personInfo="item" v-on="$listeners" />
+		<div class="bars">
+			<div
+				v-for="barIdx in barCount"
+				:key="barIdx"
+				class="bar"
+				:style="{ background: MBTI_COLUMN.barColor }"
+			>
+				<div v-for="item in profileList(barIdx)" :key="item.id">
+					<PersonProfile :personInfo="item" v-on="$listeners" />
+				</div>
 			</div>
 		</div>
 		<div class="explanation">
@@ -30,10 +37,27 @@ export default {
 		MBTI_TYPE: { type: String, default: "" },
 		filteredPeople: { type: Array, default: () => [] },
 	},
+	computed: {
+		barCount() {
+			let result = parseInt((this.filteredPeople.length + 5) / 6);
+
+			if (result === 0) {
+				result += 1;
+			}
+
+			return result;
+		},
+	},
 	created() {
 		this.MBTI_COLUMN = MBTI_COLUMN_DATA.filter(
 			item => item.mbtiType === this.MBTI_TYPE,
 		)[0];
+	},
+	methods: {
+		profileList(barIdx) {
+			const start = (barIdx - 1) * 6;
+			return this.filteredPeople.slice(start, start + 6);
+		},
 	},
 };
 </script>
@@ -43,6 +67,10 @@ export default {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+.bars {
+	display: flex;
 }
 
 .bar {
