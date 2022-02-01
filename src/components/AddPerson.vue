@@ -23,6 +23,10 @@ export default {
 			this.modalOn = true;
 		},
 		doAdd(name, mbti, file) {
+			if (!name || !mbti) {
+				alert("You have to input your name and mbti.");
+				return;
+			}
 			this.$emit("addPersonProfile", name, mbti, file);
 			this.modalOn = false;
 		},
